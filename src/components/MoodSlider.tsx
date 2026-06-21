@@ -23,7 +23,7 @@ export function MoodSlider({ value, onChange }: Props) {
         initial={{ scale: 0.8, opacity: 0.6 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 500, damping: 18 }}
-        className="select-none text-[88px] leading-none drop-shadow-sm"
+        className="select-none text-[88px] leading-none drop-shadow-sm md:text-[104px]"
         aria-hidden
       >
         {faceFor(value)}
@@ -46,7 +46,7 @@ export function MoodSlider({ value, onChange }: Props) {
               onClick={() => set(n)}
               aria-label={`${n}`}
               className={[
-                'focus-ring flex h-11 w-11 items-center justify-center rounded-full text-2xl transition',
+                'focus-ring flex h-11 w-11 items-center justify-center rounded-full text-2xl transition md:h-14 md:w-14 md:text-3xl',
                 active ? 'scale-110 bg-accent-soft/60' : 'opacity-50 hover:opacity-90',
               ].join(' ')}
             >

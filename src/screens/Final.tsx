@@ -56,7 +56,7 @@ export function Final() {
 
   return (
     <AppShell>
-      <div className="flex flex-1 flex-col justify-center gap-8 px-6 py-16 text-center">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-8 px-6 py-16 text-center">
         <motion.div
           initial={{ scale: 0.6, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
