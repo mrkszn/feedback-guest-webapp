@@ -5,8 +5,11 @@ import type {
   Dig,
   DigAnswer,
   DigAnswerResponse,
+  GuestIdentity,
+  IdentifyBody,
   Journey,
   JourneyName,
+  PrizeResult,
   SessionState,
   StartSessionOpts,
   VoiceUploadResponse,
@@ -92,4 +95,22 @@ export function uploadVoice(
 
 export function finalizeSession(sessionId: string): Promise<void> {
   return request(`/guest/sessions/${sessionId}/finalize`, { method: 'POST' })
+}
+
+// ── Phase C: identity + prize ─────────────────────────────────────────────
+
+/** Submit guest contact details. 400 if name is empty (backend-validated). */
+export function submitIdentify(
+  sessionId: string,
+  body: IdentifyBody,
+): Promise<GuestIdentity> {
+  return request(`/guest/sessions/${sessionId}/identify`, {
+    method: 'POST',
+    body,
+  })
+}
+
+/** Fetch the prize. Must be called AFTER finalize — 409 otherwise. */
+export function fetchPrize(sessionId: string): Promise<PrizeResult> {
+  return request(`/guest/sessions/${sessionId}/prize`)
 }
