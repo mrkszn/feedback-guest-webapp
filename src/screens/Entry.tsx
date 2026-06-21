@@ -107,6 +107,12 @@ export function Entry() {
   const journey: JourneyName = params.get('journey') === 'delivery' ? 'delivery' : 'restaurant'
   const mode: SessionMode = params.get('mode') === 'targeted' ? 'targeted' : 'non_targeted'
 
+  // An explicit `?mode=`/`?journey=` means the guest arrived via a (possibly
+  // new) QR — that context must win. Without this, a returning guest is
+  // auto-resumed into their PREVIOUS session/mode and a targeted QR silently
+  // behaves as non_targeted. Bare `/` (no params) still resumes a live session.
+  const hasEntryParams = params.get('mode') !== null || params.get('journey') !== null
+
   const use3D = useMemo(() => !reduced && webglAvailable(), [reduced])
 
   // Auto-auth path: ?t=<token> → straight to the feed.
@@ -127,8 +133,10 @@ export function Entry() {
         } catch {
           if (!cancelled) show(t('toast.error'), 'error')
         }
-      } else if (hasAuth()) {
-        // Returning guest with a live session → restore into the feed.
+      } else if (hasAuth() && !hasEntryParams) {
+        // Returning guest hitting the bare URL → restore into the feed. With
+        // explicit entry params we fall through to the hero so a fresh session
+        // starts in the QR-carried mode.
         navigate('/feed', { replace: true })
       }
     }
