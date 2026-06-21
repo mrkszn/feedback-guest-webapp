@@ -15,6 +15,11 @@
   --accent: 224 88 138;
   --accent-soft: 245 196 214;
 
+  /* InsightFlow brand — indigo / violet / cyan flow. Theme-independent. */
+  --brand: 99 102 241;
+  --brand-soft: 165 180 252;
+  --brand-ink: 30 27 75;
+
   color-scheme: light;
 }
 
@@ -43,6 +48,18 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overscroll-behavior: none;
+}
+
+/* InsightFlow brand backdrop — a slowly drifting indigo→violet→cyan flow.
+   Shown instantly on the entry hero (first paint) and stays behind / instead
+   of the lazy 3D canvas (reduced motion, no WebGL, while the chunk loads). */
+.brand-flow-bg {
+  background:
+    radial-gradient(120% 80% at 15% 10%, rgba(99, 102, 241, 0.55), transparent 60%),
+    radial-gradient(120% 80% at 85% 20%, rgba(168, 85, 247, 0.5), transparent 60%),
+    radial-gradient(140% 90% at 50% 100%, rgba(34, 211, 238, 0.45), transparent 65%),
+    linear-gradient(130deg, #1e1b4b, #2b1a52 45%, #0f1733);
+  background-size: 200% 200%;
 }
 
 /* The horizontal pager relies on momentum-free snap. */
