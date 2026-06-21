@@ -16,7 +16,7 @@ export interface Beat {
   label_en: string
   icon: string
   input_type: InputType
-  available_tags: Tag[]
+  tags: Tag[]
 }
 
 export interface Journey {
