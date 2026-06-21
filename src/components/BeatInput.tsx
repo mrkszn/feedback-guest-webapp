@@ -51,7 +51,7 @@ export function BeatInput({ beat }: { beat: Beat }) {
   if (beat.input_type === 'chip_pick') {
     return (
       <ChipTags
-        tags={beat.available_tags}
+        tags={beat.tags}
         selected={state.tags ?? []}
         onToggle={(id) => toggleTag(beat.id, id)}
         open
@@ -65,7 +65,7 @@ export function BeatInput({ beat }: { beat: Beat }) {
     <motion.div layout className="flex w-full flex-col gap-8">
       <MoodSlider value={state.score} onChange={(s) => setScore(beat.id, s)} />
       <ChipTags
-        tags={beat.available_tags}
+        tags={beat.tags}
         selected={state.tags ?? []}
         onToggle={(id) => toggleTag(beat.id, id)}
         open={showTags}
