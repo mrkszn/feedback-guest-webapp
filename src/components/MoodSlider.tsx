@@ -7,10 +7,9 @@ interface Props {
   onChange: (score: number) => void
 }
 
-/** 1–5 mood slider with an animated face. Tap a face to set quickly. */
+/** 1–5 mood picker — tap a face. */
 export function MoodSlider({ value, onChange }: Props) {
   const { selection } = useHaptics()
-  const current = value ?? 3
 
   const set = (n: number) => {
     if (n !== value) selection()
@@ -30,21 +29,11 @@ export function MoodSlider({ value, onChange }: Props) {
         {faceFor(value)}
       </motion.div>
 
-      <input
-        type="range"
-        className="mood focus-ring"
-        min={1}
-        max={5}
-        step={1}
-        value={current}
-        onChange={(e) => set(Number(e.target.value))}
+      <div
+        role="radiogroup"
         aria-label="mood"
-        aria-valuemin={1}
-        aria-valuemax={5}
-        aria-valuenow={value ?? undefined}
-      />
-
-      <div className="flex w-full items-center justify-between px-1">
+        className="flex w-full items-center justify-between px-1"
+      >
         {MOOD_FACES.slice(1).map((face, i) => {
           const n = i + 1
           const active = value === n
@@ -52,6 +41,8 @@ export function MoodSlider({ value, onChange }: Props) {
             <button
               key={n}
               type="button"
+              role="radio"
+              aria-checked={active}
               onClick={() => set(n)}
               aria-label={`${n}`}
               className={[
