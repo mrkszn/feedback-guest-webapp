@@ -22,7 +22,7 @@ export function Recap() {
 
   return (
     <AppShell>
-      <div className="flex flex-1 flex-col justify-center gap-10 px-6 py-16">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-10 px-6 py-16">
         <motion.h1
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}

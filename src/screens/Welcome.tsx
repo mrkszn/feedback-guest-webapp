@@ -16,7 +16,7 @@ export function Welcome() {
 
   return (
     <AppShell>
-      <div className="flex flex-1 flex-col items-center justify-center gap-10 px-6 py-16 text-center">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-10 px-6 py-16 text-center">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}

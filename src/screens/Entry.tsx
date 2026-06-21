@@ -191,7 +191,7 @@ export function Entry() {
 
       <TopControls />
 
-      <div className="relative z-10 mx-auto flex min-h-dvh max-w-app flex-col px-6 pb-12 pt-20">
+      <div className="relative z-10 mx-auto flex min-h-dvh max-w-app flex-col px-6 pb-12 pt-20 md:max-w-lg lg:justify-center lg:gap-10 lg:pt-0">
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -201,7 +201,7 @@ export function Entry() {
           <span className="text-lg font-semibold tracking-tight">InsightFlow</span>
         </motion.div>
 
-        <div className="flex-1" />
+        <div className="flex-1 lg:hidden" />
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -218,7 +218,7 @@ export function Entry() {
               <p className="text-sm font-medium text-white/75">
                 {t('entry.occasion.title')}
               </p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {OCCASIONS.map((o, i) => (
                   <motion.button
                     key={o.key}
