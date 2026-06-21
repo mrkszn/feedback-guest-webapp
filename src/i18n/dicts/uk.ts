@@ -62,4 +62,22 @@ export const uk = {
   'final.email.note': 'Знижка на наступне замовлення (скоро)',
   'final.share': 'Поділитися',
   'final.share.text': 'Ось як пройшов мій вечір',
+
+  'identify.title': 'Лишилось познайомитись',
+  'identify.name': 'Імʼя',
+  'identify.email': 'Email',
+  'identify.phone': 'Телефон',
+  'identify.email.required': 'Email потрібен, щоб надіслати приз',
+  'identify.cta': 'Далі',
+  'identify.name.required': 'Вкажи, будь ласка, імʼя',
+
+  'prize.spinning': 'Крутимо колесо…',
+  'prize.tier.small': 'Маленький',
+  'prize.tier.medium': 'Середній',
+  'prize.tier.large': 'Великий',
+  'prize.code.label': 'Твій код',
+  'prize.points': 'балів',
+  'prize.copy': 'Скопіювати код',
+  'prize.copied': 'Скопійовано!',
+  'prize.done': 'Готово',
 } as const

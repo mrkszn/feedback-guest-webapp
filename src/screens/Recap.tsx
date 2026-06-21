@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useSession } from '@/state/session'
 import { useI18n } from '@/i18n'
+import { getMode } from '@/auth/token'
 import { AppShell } from '@/components/AppShell'
 import { Loading } from '@/components/Loading'
 import { MoodCurve } from '@/components/MoodCurve'
@@ -19,6 +20,10 @@ export function Recap() {
   if (status !== 'ready') return <Loading />
 
   const weak = weakBeatIds()
+  // Only the targeted flow runs the AI dig (and only when there are weak
+  // beats). Everyone else heads straight to Identify.
+  const goDig = getMode() === 'targeted' && weak.length > 0
+  const next = () => navigate(goDig ? '/dig' : '/identify')
 
   return (
     <AppShell>
@@ -40,29 +45,16 @@ export function Recap() {
           <MoodCurve beats={beats} weakIds={weak} />
         </motion.div>
 
-        {weak.length > 0 ? (
-          <motion.button
-            type="button"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            onClick={() => navigate('/dig')}
-            className="focus-ring rounded-2xl bg-accent px-6 py-4 text-lg font-semibold text-white shadow-lg transition active:scale-[0.98]"
-          >
-            {t('recap.weak.help')}
-          </motion.button>
-        ) : (
-          <motion.button
-            type="button"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            onClick={() => navigate('/final')}
-            className="focus-ring rounded-2xl bg-accent px-6 py-4 text-lg font-semibold text-white shadow-lg transition active:scale-[0.98]"
-          >
-            {t('recap.allgood')}
-          </motion.button>
-        )}
+        <motion.button
+          type="button"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          onClick={next}
+          className="focus-ring rounded-2xl bg-accent px-6 py-4 text-lg font-semibold text-white shadow-lg transition active:scale-[0.98]"
+        >
+          {t(goDig ? 'recap.weak.help' : 'recap.allgood')}
+        </motion.button>
       </div>
     </AppShell>
   )

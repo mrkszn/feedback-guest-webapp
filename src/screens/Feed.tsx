@@ -7,6 +7,7 @@ import { useToast } from '@/components/Toast'
 import { useHaptics } from '@/hooks/useHaptics'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { getMode } from '@/auth/token'
 import { sceneFor } from '@/theme/scenes'
 import { AppShell } from '@/components/AppShell'
 import { Loading } from '@/components/Loading'
@@ -19,7 +20,8 @@ export function Feed() {
   const { impact } = useHaptics()
   const reduced = useReducedMotion()
   const desktop = useMediaQuery('(min-width: 1024px)')
-  const { status, beats, load, skip, saveError } = useSession()
+  const { status, beats, load, skip, saveError, localPoints } = useSession()
+  const targeted = getMode() === 'targeted'
 
   const scrollerRef = useRef<HTMLDivElement>(null)
   const [index, setIndex] = useState(0)
@@ -108,6 +110,22 @@ export function Feed() {
           transition={{ duration: reduced ? 0 : 0.6 }}
         />
       </AnimatePresence>
+
+      {/* Targeted mode: a visible, cosmetic points counter (backend is the
+          source of truth at finalize). Top-left, clear of the language pill. */}
+      {targeted && (
+        <motion.div
+          key={localPoints()}
+          initial={{ scale: 0.9 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 24 }}
+          className="absolute left-3 top-3 z-30 flex items-center gap-1 rounded-full bg-surface-raised/85 px-3 py-1.5 text-sm font-semibold text-ink shadow-sm ring-1 ring-black/5 backdrop-blur"
+          aria-live="polite"
+        >
+          <span aria-hidden>✨</span>
+          {localPoints()}
+        </motion.div>
+      )}
 
       <AppShell wide={desktop}>
         {desktop ? (

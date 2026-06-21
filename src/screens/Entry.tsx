@@ -118,6 +118,9 @@ export function Entry() {
         try {
           const res = await authWithToken(tokenParam)
           if (cancelled) return
+          // Persist the QR-carried context (mode/journey) so the feed and the
+          // Phase C routing pick the right flow even on the token path.
+          setJourneyContext(journey, mode)
           setAuth(res.token, res.session_id)
           navigate('/feed', { replace: true })
           return

@@ -10,6 +10,8 @@ const Welcome = lazyWithRetry(() => import('@/screens/Welcome'))
 const Feed = lazyWithRetry(() => import('@/screens/Feed'))
 const Recap = lazyWithRetry(() => import('@/screens/Recap'))
 const Dig = lazyWithRetry(() => import('@/screens/Dig'))
+const Identify = lazyWithRetry(() => import('@/screens/Identify'))
+const Prize = lazyWithRetry(() => import('@/screens/Prize'))
 const Final = lazyWithRetry(() => import('@/screens/Final'))
 
 export function App() {
@@ -47,6 +49,22 @@ export function App() {
             element={
               <RequireAuth>
                 <Dig />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/identify"
+            element={
+              <RequireAuth>
+                <Identify />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/prize"
+            element={
+              <RequireAuth>
+                <Prize />
               </RequireAuth>
             }
           />

@@ -54,6 +54,10 @@ export interface SessionState {
   session_id: string
   beats: BeatState[]
   finalized?: boolean
+  // Phase C: the backend echoes the product mode and the running points total
+  // on restore so a returning guest lands in the right flow.
+  mode?: SessionMode
+  points?: number | null
 }
 
 export interface BeatPatch {
@@ -90,6 +94,34 @@ export interface DigAnswerResponse {
 
 export interface VoiceUploadResponse {
   object_key: string
+}
+
+// ── Phase C: identity + prize ─────────────────────────────────────────────
+
+// Guest contact details. Collected on the Identify screen — name is always
+// required; email is additionally required in `targeted` mode (for the prize).
+export interface GuestIdentity {
+  name: string
+  email: string | null
+  phone: string | null
+}
+
+export interface IdentifyBody {
+  name: string
+  email?: string
+  phone?: string
+}
+
+export type PrizeTier = 'small' | 'medium' | 'large'
+
+// Result of the fortune wheel — the tier (which segment to land on), the
+// points the backend awarded, the redeemable code, and a pre-localized label.
+export interface PrizeResult {
+  tier: PrizeTier
+  points: number
+  code: string
+  label_uk: string
+  label_en: string
 }
 
 export interface ApiError {
