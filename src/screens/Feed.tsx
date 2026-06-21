@@ -6,6 +6,7 @@ import { useI18n } from '@/i18n'
 import { useToast } from '@/components/Toast'
 import { useHaptics } from '@/hooks/useHaptics'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { sceneFor } from '@/theme/scenes'
 import { AppShell } from '@/components/AppShell'
 import { Loading } from '@/components/Loading'
@@ -17,6 +18,7 @@ export function Feed() {
   const { show } = useToast()
   const { impact } = useHaptics()
   const reduced = useReducedMotion()
+  const desktop = useMediaQuery('(min-width: 1024px)')
   const { status, beats, load, skip, saveError } = useSession()
 
   const scrollerRef = useRef<HTMLDivElement>(null)
@@ -90,7 +92,7 @@ export function Feed() {
 
   return (
     <div
-      className="relative min-h-dvh overflow-hidden"
+      className="relative min-h-dvh overflow-hidden lg:overflow-visible"
       style={{ ['--accent' as string]: scene.accent, ['--accent-soft' as string]: scene.accentSoft }}
     >
       {/* Crossfading scene gradient over the neutral base. */}
@@ -107,7 +109,43 @@ export function Feed() {
         />
       </AnimatePresence>
 
-      <AppShell>
+      <AppShell wide={desktop}>
+        {desktop ? (
+          /* Desktop: the whole evening at once — a grid of beat cards, no
+             swiping. State is shared, so each card's input works the same. */
+          <div className="flex flex-1 flex-col gap-8 px-8 py-14">
+            <h1 className="text-center text-2xl font-semibold text-ink">
+              {t('welcome.title')}
+            </h1>
+            <div className="grid gap-5 md:grid-cols-2">
+              {beats.map((beat) => (
+                <section
+                  key={beat.id}
+                  className="flex flex-col items-center gap-6 rounded-3xl bg-surface-raised/60 p-6 shadow-sm ring-1 ring-black/5 backdrop-blur"
+                  aria-label={pick(beat, 'label')}
+                >
+                  <div className="flex flex-col items-center gap-1.5 text-center">
+                    <span className="text-3xl" aria-hidden>
+                      {beat.icon}
+                    </span>
+                    <h2 className="text-base font-semibold text-ink">{pick(beat, 'label')}</h2>
+                  </div>
+                  <BeatInput beat={beat} />
+                </section>
+              ))}
+            </div>
+            <div className="flex justify-center pb-8 pt-2">
+              <button
+                type="button"
+                onClick={() => navigate('/recap')}
+                className="focus-ring rounded-full bg-accent px-10 py-3.5 text-lg font-semibold text-white shadow-md transition active:scale-[0.98]"
+              >
+                {t('feed.done')}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
         {/* Progress bar + dots */}
         <div className="absolute inset-x-0 top-0 z-20 px-4 pt-3">
           <div className="h-1 w-full overflow-hidden rounded-full bg-ink/10">
@@ -196,6 +234,8 @@ export function Feed() {
             </button>
           )}
         </div>
+          </>
+        )}
       </AppShell>
     </div>
   )
