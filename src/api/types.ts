@@ -4,6 +4,20 @@
 
 export type InputType = 'mood_slider' | 'chip_pick' | 'yes_no'
 
+// Which journey the guest walks (chosen by the QR code, not the guest) and the
+// product mode (gamified vs plain emoji survey — behaviour lands in Phase C).
+export type JourneyName = 'restaurant' | 'delivery'
+export type SessionMode = 'non_targeted' | 'targeted'
+export type MealOccasion = 'breakfast' | 'lunch' | 'dinner' | 'other'
+
+// Optional body for POST /guest/sessions. All fields optional — a bare start
+// is a default restaurant / non_targeted session.
+export interface StartSessionOpts {
+  journey?: JourneyName
+  mode?: SessionMode
+  meal_occasion?: MealOccasion
+}
+
 export interface Tag {
   id: string
   label_uk: string

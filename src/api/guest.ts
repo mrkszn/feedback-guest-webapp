@@ -6,7 +6,9 @@ import type {
   DigAnswer,
   DigAnswerResponse,
   Journey,
+  JourneyName,
   SessionState,
+  StartSessionOpts,
   VoiceUploadResponse,
 } from './types'
 
@@ -17,15 +19,24 @@ export function authWithToken(t: string): Promise<AuthResponse> {
   return request('/guest/auth', { method: 'POST', body: { t }, auth: false })
 }
 
-/** Start an anonymous session (web_anon). `journey` selects e.g. delivery. */
-export function startAnonymousSession(): Promise<AuthResponse> {
-  return request('/guest/sessions', { method: 'POST', body: {}, auth: false })
+/**
+ * Start an anonymous session (web_anon). The QR code selects the journey
+ * (restaurant | delivery), the product mode and — for restaurant — the meal
+ * occasion. A bare call starts a default restaurant / non_targeted session.
+ */
+export function startAnonymousSession(
+  opts: StartSessionOpts = {},
+): Promise<AuthResponse> {
+  return request('/guest/sessions', { method: 'POST', body: opts, auth: false })
 }
 
 // ── Journey + session ───────────────────────────────────────────────────
 
-export function fetchJourney(): Promise<Journey> {
-  return request('/guest/journey')
+/** Fetch a journey bundle. Defaults to the restaurant journey; pass
+ * `'delivery'` to load that named one. */
+export function fetchJourney(name?: JourneyName): Promise<Journey> {
+  const qs = name && name !== 'restaurant' ? `?name=${encodeURIComponent(name)}` : ''
+  return request(`/guest/journey${qs}`)
 }
 
 export function fetchSession(sessionId: string): Promise<SessionState> {
