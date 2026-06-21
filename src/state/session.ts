@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { fetchJourney, fetchSession, patchBeat } from '@/api/guest'
-import { getSessionId } from '@/auth/token'
+import { getJourney, getSessionId } from '@/auth/token'
 import type { Beat, BeatState } from '@/api/types'
 
 export const WEAK_THRESHOLD = 3
@@ -61,7 +61,7 @@ export const useSession = create<SessionStore>((set, get) => ({
   load: async () => {
     set({ status: 'loading' })
     try {
-      const journey = await fetchJourney()
+      const journey = await fetchJourney(getJourney())
       const states: Record<string, BeatState> = {}
       for (const b of journey.beats) states[b.id] = { beat_id: b.id }
 
