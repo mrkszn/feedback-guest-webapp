@@ -5,9 +5,6 @@ export const en: Record<keyof typeof uk, string> = {
   'lang.name': 'English',
   'lang.switch': 'Language',
 
-  'theme.light': 'Light',
-  'theme.dark': 'Dark',
-  'theme.system': 'System',
 
   'common.loading': 'Loading…',
   'common.retry': 'Try again',
@@ -37,7 +34,6 @@ export const en: Record<keyof typeof uk, string> = {
   'welcome.cta': "Let's go",
 
   'feed.progress': 'Beat {current} of {total}',
-  'feed.mood.hint': 'Drag or tap the face',
   'feed.tags.hint': 'What exactly? Pick 1–3',
   'feed.yes': 'Yes',
   'feed.no': 'No',

@@ -4,9 +4,6 @@ export const uk = {
   'lang.name': 'Українська',
   'lang.switch': 'Мова',
 
-  'theme.light': 'Світла',
-  'theme.dark': 'Темна',
-  'theme.system': 'Системна',
 
   'common.loading': 'Завантажуємо…',
   'common.retry': 'Спробувати ще',
@@ -36,7 +33,6 @@ export const uk = {
   'welcome.cta': 'Поехали',
 
   'feed.progress': 'Такт {current} з {total}',
-  'feed.mood.hint': 'Потягни або тапни по обличчю',
   'feed.tags.hint': 'Що саме? Обери 1–3',
   'feed.yes': 'Так',
   'feed.no': 'Ні',
