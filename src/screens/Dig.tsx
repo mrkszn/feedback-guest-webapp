@@ -42,7 +42,8 @@ export function Dig() {
     if (status === 'idle') load()
   }, [status, load])
 
-  const finish = useCallback(() => navigate('/final', { replace: true }), [navigate])
+  // Dig is reached only in the targeted flow; after digging, collect identity.
+  const finish = useCallback(() => navigate('/identify', { replace: true }), [navigate])
 
   // Kick off a dig for the current weak beat.
   useEffect(() => {

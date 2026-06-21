@@ -63,4 +63,22 @@ export const en: Record<keyof typeof uk, string> = {
   'final.email.note': 'Discount on your next order (soon)',
   'final.share': 'Share',
   'final.share.text': 'Here is how my evening went',
+
+  'identify.title': "Let's get acquainted",
+  'identify.name': 'Name',
+  'identify.email': 'Email',
+  'identify.phone': 'Phone',
+  'identify.email.required': 'Email is required to send your prize',
+  'identify.cta': 'Continue',
+  'identify.name.required': 'Please enter your name',
+
+  'prize.spinning': 'Spinning the wheel…',
+  'prize.tier.small': 'Small',
+  'prize.tier.medium': 'Medium',
+  'prize.tier.large': 'Large',
+  'prize.code.label': 'Your code',
+  'prize.points': 'points',
+  'prize.copy': 'Copy code',
+  'prize.copied': 'Copied!',
+  'prize.done': 'Done',
 }

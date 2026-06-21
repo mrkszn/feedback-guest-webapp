@@ -22,7 +22,15 @@ interface SessionStore {
 
   beatState: (beatId: string) => BeatState
   weakBeatIds: () => string[]
+  /** Cosmetic local points estimate shown in the targeted feed. The backend
+   * is the source of truth at finalize; this only mirrors what's visible in
+   * the feed (mood taps + chips). */
+  localPoints: () => number
 }
+
+// Points weights (cosmetic — kept in sync with the backend formula).
+const PTS_SCORE = 5
+const PTS_TAG = 3
 
 // Per-beat debounce timers so a dragging slider coalesces into one PATCH.
 const timers = new Map<string, ReturnType<typeof setTimeout>>()
@@ -120,5 +128,16 @@ export const useSession = create<SessionStore>((set, get) => ({
         return s && !s.skipped && typeof s.score === 'number' && s.score <= WEAK_THRESHOLD
       })
       .map((b) => b.id)
+  },
+
+  localPoints: () => {
+    const { states } = get()
+    let pts = 0
+    for (const s of Object.values(states)) {
+      if (s.skipped) continue
+      if (typeof s.score === 'number') pts += PTS_SCORE
+      pts += (s.tags?.length ?? 0) * PTS_TAG
+    }
+    return pts
   },
 }))
