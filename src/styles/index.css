@@ -42,8 +42,11 @@ body,
 
 body {
   margin: 0;
-  background: rgb(var(--surface));
-  color: rgb(var(--ink));
+  /* Dark brand base — the InsightFlow backdrop (BrandBackdrop) covers the
+     viewport; this only shows for the instant before it mounts and prevents a
+     white flash. The whole guest survey is the dark brand surface now. */
+  background: #0f1733;
+  color: #ffffff;
   font-family: 'Inter var', Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;

@@ -1,24 +1,13 @@
-import {
-  Component,
-  Suspense,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { authWithToken, startAnonymousSession } from '@/api/guest'
 import { getMode, hasAuth, setAuth, setJourney } from '@/auth/token'
-import { lazyWithRetry } from '@/lib/lazyWithRetry'
-import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useI18n } from '@/i18n'
 import { useToast } from '@/components/Toast'
 import { TopControls } from '@/components/TopControls'
 import { Loading } from '@/components/Loading'
 import type { JourneyName, MealOccasion } from '@/api/types'
-
-const EntryScene3D = lazyWithRetry(() => import('@/screens/EntryScene3D'))
 
 // Extract a one-time token from `?t=` or from a pasted full URL / bare code.
 function extractToken(raw: string): string | null {
@@ -32,30 +21,6 @@ function extractToken(raw: string): string | null {
     /* not a URL — treat as a bare code below */
   }
   return /^[\w-]{6,}$/.test(v) ? v : null
-}
-
-function webglAvailable(): boolean {
-  try {
-    const c = document.createElement('canvas')
-    return Boolean(
-      window.WebGLRenderingContext &&
-        (c.getContext('webgl') || c.getContext('experimental-webgl')),
-    )
-  } catch {
-    return false
-  }
-}
-
-/** Keeps a WebGL/runtime failure in the 3D scene from bubbling to the app
- * error screen — we just fall back to the gradient backdrop. */
-class SilentBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
-  state = { failed: false }
-  static getDerivedStateFromError() {
-    return { failed: true }
-  }
-  render() {
-    return this.state.failed ? null : this.props.children
-  }
 }
 
 /** Brand "flow" swoosh — the InsightFlow mark, matched to the favicon. */
@@ -98,7 +63,6 @@ export function Entry() {
   const navigate = useNavigate()
   const { t } = useI18n()
   const { show } = useToast()
-  const reduced = useReducedMotion()
   const [busy, setBusy] = useState(false)
   const [showLink, setShowLink] = useState(false)
   const [link, setLink] = useState('')
@@ -112,8 +76,6 @@ export function Entry() {
   // start a fresh session for it. Without this, a returning guest is
   // auto-resumed into their previous journey. Bare `/` still resumes a live one.
   const hasEntryParams = params.get('journey') !== null
-
-  const use3D = useMemo(() => !reduced && webglAvailable(), [reduced])
 
   // Auto-auth path: ?t=<token> → straight to the feed.
   const tokenParam = params.get('t')
@@ -184,21 +146,7 @@ export function Entry() {
   }
 
   return (
-    <div className="relative min-h-dvh overflow-hidden text-white">
-      {/* Brand backdrop: gradient first paint, 3D canvas swapped in over it. */}
-      <div className="brand-flow-bg animate-brand-flow fixed inset-0 -z-20" />
-      {use3D && (
-        <div className="fixed inset-0 -z-10">
-          <SilentBoundary>
-            <Suspense fallback={null}>
-              <EntryScene3D />
-            </Suspense>
-          </SilentBoundary>
-        </div>
-      )}
-      {/* Legibility veil under the copy. */}
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 -z-10 h-2/3 bg-gradient-to-t from-[#0d1330] via-[#0d1330]/55 to-transparent" />
-
+    <div className="relative min-h-dvh text-white">
       <TopControls />
 
       <div className="relative z-10 mx-auto flex min-h-dvh max-w-app flex-col px-6 pb-12 pt-20 md:max-w-lg lg:justify-center lg:gap-10 lg:pt-0">

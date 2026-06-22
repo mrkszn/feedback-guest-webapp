@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { lazyWithRetry } from '@/lib/lazyWithRetry'
 import { RequireAuth } from '@/components/RequireAuth'
+import { BrandBackdrop } from '@/components/BrandBackdrop'
 import { Loading } from '@/components/Loading'
 
 // Entry is eager (it is the landing route); the rest are lazy + retry-on-deploy.
@@ -17,6 +18,9 @@ const Final = lazyWithRetry(() => import('@/screens/Final'))
 export function App() {
   return (
     <BrowserRouter>
+      {/* The InsightFlow backdrop lives here, behind every route — mounted once
+          so the 3D canvas persists across navigation (no remount/flash). */}
+      <BrandBackdrop />
       <Suspense fallback={<Loading />}>
         <Routes>
           <Route path="/" element={<Entry />} />
