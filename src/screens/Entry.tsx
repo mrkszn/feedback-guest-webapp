@@ -9,14 +9,14 @@ import {
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { authWithToken, startAnonymousSession } from '@/api/guest'
-import { hasAuth, setAuth, setJourneyContext } from '@/auth/token'
+import { getMode, hasAuth, setAuth, setJourney } from '@/auth/token'
 import { lazyWithRetry } from '@/lib/lazyWithRetry'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useI18n } from '@/i18n'
 import { useToast } from '@/components/Toast'
 import { TopControls } from '@/components/TopControls'
 import { Loading } from '@/components/Loading'
-import type { JourneyName, MealOccasion, SessionMode } from '@/api/types'
+import type { JourneyName, MealOccasion } from '@/api/types'
 
 const EntryScene3D = lazyWithRetry(() => import('@/screens/EntryScene3D'))
 
@@ -103,15 +103,15 @@ export function Entry() {
   const [showLink, setShowLink] = useState(false)
   const [link, setLink] = useState('')
 
-  // The QR code decides the context — the guest never picks the source.
+  // Mode is fixed per deployment (this domain is one product); the QR only
+  // carries the journey. The guest never picks either.
   const journey: JourneyName = params.get('journey') === 'delivery' ? 'delivery' : 'restaurant'
-  const mode: SessionMode = params.get('mode') === 'targeted' ? 'targeted' : 'non_targeted'
+  const mode = getMode()
 
-  // An explicit `?mode=`/`?journey=` means the guest arrived via a (possibly
-  // new) QR — that context must win. Without this, a returning guest is
-  // auto-resumed into their PREVIOUS session/mode and a targeted QR silently
-  // behaves as non_targeted. Bare `/` (no params) still resumes a live session.
-  const hasEntryParams = params.get('mode') !== null || params.get('journey') !== null
+  // An explicit `?journey=` means the guest arrived via a (possibly new) QR —
+  // start a fresh session for it. Without this, a returning guest is
+  // auto-resumed into their previous journey. Bare `/` still resumes a live one.
+  const hasEntryParams = params.get('journey') !== null
 
   const use3D = useMemo(() => !reduced && webglAvailable(), [reduced])
 
@@ -124,9 +124,8 @@ export function Entry() {
         try {
           const res = await authWithToken(tokenParam)
           if (cancelled) return
-          // Persist the QR-carried context (mode/journey) so the feed and the
-          // Phase C routing pick the right flow even on the token path.
-          setJourneyContext(journey, mode)
+          // Persist the QR-carried journey so the feed loads the right one.
+          setJourney(journey)
           setAuth(res.token, res.session_id)
           navigate('/feed', { replace: true })
           return
@@ -158,7 +157,7 @@ export function Entry() {
         mode,
         meal_occasion: journey === 'restaurant' ? occasion : undefined,
       })
-      setJourneyContext(journey, mode)
+      setJourney(journey)
       setAuth(res.token, res.session_id)
       navigate('/welcome')
     } catch {
