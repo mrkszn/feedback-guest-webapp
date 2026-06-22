@@ -96,7 +96,7 @@ export function MoodCurve({ beats, weakIds = [], pinned = false }: Props) {
         {beats.map((b) => (
           <div key={b.id} className="flex min-w-0 flex-1 flex-col items-center gap-0.5">
             <span className="text-base leading-none">{faceFor(scoreOf(b.id))}</span>
-            <span className="truncate text-[10px] text-ink-faint">{pick(b, 'label')}</span>
+            <span className="truncate text-[10px] text-white/45">{pick(b, 'label')}</span>
           </div>
         ))}
       </div>

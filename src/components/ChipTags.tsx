@@ -26,7 +26,7 @@ export function ChipTags({ tags, selected, onToggle, open }: Props) {
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           className="overflow-hidden"
         >
-          <p className="mb-3 text-center text-sm text-ink-soft">{t('feed.tags.hint')}</p>
+          <p className="mb-3 text-center text-sm text-white/70">{t('feed.tags.hint')}</p>
           <div className="flex flex-wrap justify-center gap-2">
             {tags.map((tag) => {
               const active = selected.includes(tag.id)
@@ -43,7 +43,7 @@ export function ChipTags({ tags, selected, onToggle, open }: Props) {
                     'focus-ring rounded-full px-4 py-2 text-sm font-medium transition',
                     active
                       ? 'bg-accent text-white shadow-md'
-                      : 'bg-surface-raised text-ink-soft ring-1 ring-black/5 hover:ring-accent/40',
+                      : 'bg-white/10 text-white/70 ring-1 ring-white/15 hover:ring-accent/40',
                   ].join(' ')}
                 >
                   {pick(tag, 'label')}

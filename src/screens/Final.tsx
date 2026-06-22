@@ -65,11 +65,11 @@ export function Final() {
         </motion.div>
 
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-semibold text-ink">{t('final.title')}</h1>
-          <p className="text-ink-soft">{t('final.subtitle')}</p>
+          <h1 className="text-2xl font-semibold text-white">{t('final.title')}</h1>
+          <p className="text-white/70">{t('final.subtitle')}</p>
         </div>
 
-        <div className="rounded-3xl bg-surface-raised/70 p-5 shadow-sm ring-1 ring-black/5 backdrop-blur">
+        <div className="rounded-3xl bg-white/10 p-5 shadow-sm ring-1 ring-white/15 backdrop-blur">
           <MoodCurve beats={beats} weakIds={weakBeatIds()} pinned />
         </div>
 

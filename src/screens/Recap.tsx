@@ -31,7 +31,7 @@ export function Recap() {
         <motion.h1
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center text-2xl font-semibold text-ink"
+          className="text-center text-2xl font-semibold text-white"
         >
           {t('recap.title')}
         </motion.h1>
@@ -40,7 +40,7 @@ export function Recap() {
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
-          className="rounded-3xl bg-surface-raised/70 p-5 shadow-sm ring-1 ring-black/5 backdrop-blur"
+          className="rounded-3xl bg-white/10 p-5 shadow-sm ring-1 ring-white/15 backdrop-blur"
         >
           <MoodCurve beats={beats} weakIds={weak} />
         </motion.div>

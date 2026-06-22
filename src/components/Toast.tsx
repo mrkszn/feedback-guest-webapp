@@ -54,7 +54,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   ? 'bg-red-500/90 text-white'
                   : t.kind === 'success'
                     ? 'bg-emerald-500/90 text-white'
-                    : 'bg-surface-raised/95 text-ink ring-1 ring-black/5',
+                    : 'bg-white/10 text-white ring-1 ring-white/15',
               ].join(' ')}
               role="status"
             >

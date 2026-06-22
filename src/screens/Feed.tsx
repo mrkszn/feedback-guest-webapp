@@ -77,7 +77,7 @@ export function Feed() {
     return (
       <AppShell>
         <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
-          <p className="text-ink-soft">{t('toast.error')}</p>
+          <p className="text-white/70">{t('toast.error')}</p>
           <button
             type="button"
             onClick={() => load()}
@@ -119,7 +119,7 @@ export function Feed() {
           initial={{ scale: 0.9 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 500, damping: 24 }}
-          className="absolute left-3 top-3 z-30 flex items-center gap-1 rounded-full bg-surface-raised/85 px-3 py-1.5 text-sm font-semibold text-ink shadow-sm ring-1 ring-black/5 backdrop-blur"
+          className="absolute left-3 top-3 z-30 flex items-center gap-1 rounded-full bg-white/10 px-3 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-white/15 backdrop-blur"
           aria-live="polite"
         >
           <span aria-hidden>✨</span>
@@ -132,21 +132,21 @@ export function Feed() {
           /* Desktop: the whole evening at once — a grid of beat cards, no
              swiping. State is shared, so each card's input works the same. */
           <div className="flex flex-1 flex-col gap-8 px-8 py-14">
-            <h1 className="text-center text-2xl font-semibold text-ink">
+            <h1 className="text-center text-2xl font-semibold text-white">
               {t('welcome.title')}
             </h1>
             <div className="grid gap-5 md:grid-cols-2">
               {beats.map((beat) => (
                 <section
                   key={beat.id}
-                  className="flex flex-col items-center gap-6 rounded-3xl bg-surface-raised/60 p-6 shadow-sm ring-1 ring-black/5 backdrop-blur"
+                  className="flex flex-col items-center gap-6 rounded-3xl bg-white/10 p-6 shadow-sm ring-1 ring-white/15 backdrop-blur"
                   aria-label={pick(beat, 'label')}
                 >
                   <div className="flex flex-col items-center gap-1.5 text-center">
                     <span className="text-3xl" aria-hidden>
                       {beat.icon}
                     </span>
-                    <h2 className="text-base font-semibold text-ink">{pick(beat, 'label')}</h2>
+                    <h2 className="text-base font-semibold text-white">{pick(beat, 'label')}</h2>
                   </div>
                   <BeatInput beat={beat} />
                 </section>
@@ -166,7 +166,7 @@ export function Feed() {
           <>
         {/* Progress bar + dots */}
         <div className="absolute inset-x-0 top-0 z-20 px-4 pt-3">
-          <div className="h-1 w-full overflow-hidden rounded-full bg-ink/10">
+          <div className="h-1 w-full overflow-hidden rounded-full bg-white/20">
             <motion.div
               className="h-full rounded-full bg-accent"
               animate={{ width: `${((index + 1) / total) * 100}%` }}
@@ -179,7 +179,7 @@ export function Feed() {
                 key={b.id}
                 className={[
                   'h-1.5 rounded-full transition-all',
-                  i === index ? 'w-4 bg-accent' : 'w-1.5 bg-ink/20',
+                  i === index ? 'w-4 bg-accent' : 'w-1.5 bg-white/25',
                 ].join(' ')}
               />
             ))}
@@ -202,7 +202,7 @@ export function Feed() {
                 <span className="text-4xl" aria-hidden>
                   {beat.icon}
                 </span>
-                <h2 className="text-xl font-semibold text-ink">{pick(beat, 'label')}</h2>
+                <h2 className="text-xl font-semibold text-white">{pick(beat, 'label')}</h2>
               </div>
               <BeatInput beat={beat} />
             </section>
@@ -216,7 +216,7 @@ export function Feed() {
             onClick={() => goTo(index - 1)}
             disabled={index === 0}
             aria-label={t('common.back')}
-            className="focus-ring flex h-12 w-12 items-center justify-center rounded-full bg-surface-raised/80 text-ink shadow-sm ring-1 ring-black/5 backdrop-blur disabled:opacity-30"
+            className="focus-ring flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white shadow-sm ring-1 ring-white/15 backdrop-blur disabled:opacity-30"
           >
             ‹
           </button>
@@ -228,7 +228,7 @@ export function Feed() {
               if (isLast) navigate('/recap')
               else goTo(index + 1)
             }}
-            className="focus-ring rounded-full px-4 py-2 text-sm font-medium text-ink-faint transition hover:text-ink-soft"
+            className="focus-ring rounded-full px-4 py-2 text-sm font-medium text-white/45 transition hover:text-white/70"
           >
             {t('common.skip')}
           </button>
