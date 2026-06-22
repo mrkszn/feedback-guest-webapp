@@ -17,7 +17,7 @@ export function AppShell({
   return (
     <div
       className={[
-        'relative mx-auto flex min-h-dvh w-full flex-col',
+        'relative mx-auto flex min-h-dvh w-full flex-col text-white',
         wide ? 'max-w-app md:max-w-2xl lg:max-w-5xl' : 'max-w-app md:max-w-xl',
       ].join(' ')}
     >

@@ -150,7 +150,7 @@ export function Dig() {
             <span className="text-3xl" aria-hidden>
               {beat.icon}
             </span>
-            <h2 className="text-lg font-semibold text-ink">{pick(beat, 'label')}</h2>
+            <h2 className="text-lg font-semibold text-white">{pick(beat, 'label')}</h2>
           </div>
         )}
 
@@ -168,7 +168,7 @@ export function Dig() {
                 onChange={(e) => setText(e.target.value)}
                 placeholder={t('dig.text.placeholder')}
                 rows={3}
-                className="focus-ring resize-none rounded-2xl bg-surface-soft px-4 py-3 text-ink ring-1 ring-black/5"
+                className="focus-ring resize-none rounded-2xl bg-white/10 px-4 py-3 text-white placeholder:text-white/40 ring-1 ring-white/15"
               />
 
               {recorder.supported && (
@@ -186,7 +186,7 @@ export function Dig() {
                     <button
                       type="button"
                       onClick={recorder.reset}
-                      className="focus-ring flex-1 rounded-xl bg-surface-raised px-4 py-3 font-medium text-ink ring-1 ring-black/5"
+                      className="focus-ring flex-1 rounded-xl bg-white/10 px-4 py-3 font-medium text-white ring-1 ring-white/15"
                     >
                       🎙️ {t('dig.record.again')}
                     </button>
@@ -194,7 +194,7 @@ export function Dig() {
                     <button
                       type="button"
                       onClick={recorder.start}
-                      className="focus-ring flex-1 rounded-xl bg-surface-raised px-4 py-3 font-medium text-ink ring-1 ring-black/5"
+                      className="focus-ring flex-1 rounded-xl bg-white/10 px-4 py-3 font-medium text-white ring-1 ring-white/15"
                     >
                       🎙️ {t('dig.record.start')}
                     </button>
@@ -229,12 +229,12 @@ export function Dig() {
                   transition={{ delay: i * 0.06 }}
                   disabled={busy}
                   onClick={() => submit({ accepted_guess_id: g.id })}
-                  className="focus-ring flex items-center gap-3 rounded-2xl bg-surface-raised px-5 py-4 text-left shadow-sm ring-1 ring-black/5 transition active:scale-[0.98] disabled:opacity-60"
+                  className="focus-ring flex items-center gap-3 rounded-2xl bg-white/10 px-5 py-4 text-left shadow-sm ring-1 ring-white/15 transition active:scale-[0.98] disabled:opacity-60"
                 >
                   <span className="text-2xl" aria-hidden>
                     {g.emoji}
                   </span>
-                  <span className="font-medium text-ink">{pick(g, 'text')}</span>
+                  <span className="font-medium text-white">{pick(g, 'text')}</span>
                 </motion.button>
               ))}
 
@@ -243,7 +243,7 @@ export function Dig() {
                   type="button"
                   disabled={busy}
                   onClick={() => submit({})}
-                  className="focus-ring flex-1 rounded-xl px-4 py-3 text-sm font-medium text-ink-soft ring-1 ring-black/5 transition hover:text-ink disabled:opacity-60"
+                  className="focus-ring flex-1 rounded-xl px-4 py-3 text-sm font-medium text-white/70 ring-1 ring-white/15 transition hover:text-white disabled:opacity-60"
                 >
                   {t('dig.notquite')}
                 </button>
@@ -251,7 +251,7 @@ export function Dig() {
                   type="button"
                   disabled={busy}
                   onClick={() => setPhase('ownwords')}
-                  className="focus-ring flex-1 rounded-xl px-4 py-3 text-sm font-medium text-ink-soft ring-1 ring-black/5 transition hover:text-ink disabled:opacity-60"
+                  className="focus-ring flex-1 rounded-xl px-4 py-3 text-sm font-medium text-white/70 ring-1 ring-white/15 transition hover:text-white disabled:opacity-60"
                 >
                   {t('dig.ownwords')}
                 </button>

@@ -38,7 +38,7 @@ export function BeatInput({ beat }: { beat: Beat }) {
                 'focus-ring flex-1 rounded-2xl px-6 py-5 text-lg font-semibold transition active:scale-[0.98]',
                 active
                   ? 'bg-accent text-white shadow-md'
-                  : 'bg-surface-raised text-ink ring-1 ring-black/5',
+                  : 'bg-white/10 text-white ring-1 ring-white/15',
               ].join(' ')}
             >
               {opt.label}

@@ -55,7 +55,7 @@ export function Identify() {
         <motion.h1
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center text-2xl font-semibold text-ink"
+          className="text-center text-2xl font-semibold text-white"
         >
           {t('identify.title')}
         </motion.h1>
@@ -71,7 +71,7 @@ export function Identify() {
           className="flex flex-col gap-4"
         >
           <label className="flex flex-col gap-1.5">
-            <span className="px-1 text-sm font-medium text-ink-soft">
+            <span className="px-1 text-sm font-medium text-white/70">
               {t('identify.name')}
             </span>
             <input
@@ -80,12 +80,12 @@ export function Identify() {
               required
               autoFocus
               autoComplete="name"
-              className="focus-ring rounded-xl bg-surface-soft px-4 py-3 text-ink ring-1 ring-black/5"
+              className="focus-ring rounded-xl bg-white/10 px-4 py-3 text-white placeholder:text-white/40 ring-1 ring-white/15"
             />
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="px-1 text-sm font-medium text-ink-soft">
+            <span className="px-1 text-sm font-medium text-white/70">
               {t('identify.email')}
               {targeted && <span className="text-accent"> *</span>}
             </span>
@@ -98,12 +98,12 @@ export function Identify() {
               autoComplete="email"
               required={targeted}
               placeholder="you@email.com"
-              className="focus-ring rounded-xl bg-surface-soft px-4 py-3 text-ink ring-1 ring-black/5"
+              className="focus-ring rounded-xl bg-white/10 px-4 py-3 text-white placeholder:text-white/40 ring-1 ring-white/15"
             />
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="px-1 text-sm font-medium text-ink-soft">
+            <span className="px-1 text-sm font-medium text-white/70">
               {t('identify.phone')}
             </span>
             <input
@@ -112,7 +112,7 @@ export function Identify() {
               type="tel"
               inputMode="tel"
               autoComplete="tel"
-              className="focus-ring rounded-xl bg-surface-soft px-4 py-3 text-ink ring-1 ring-black/5"
+              className="focus-ring rounded-xl bg-white/10 px-4 py-3 text-white placeholder:text-white/40 ring-1 ring-white/15"
             />
           </label>
 

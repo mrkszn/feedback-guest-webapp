@@ -102,7 +102,7 @@ export function Prize() {
       <AppShell>
         <div className="flex flex-1 flex-col items-center justify-center gap-4">
           <Loading />
-          <p className="text-sm text-ink-soft">{t('prize.spinning')}</p>
+          <p className="text-sm text-white/70">{t('prize.spinning')}</p>
         </div>
       </AppShell>
     )
@@ -126,7 +126,7 @@ export function Prize() {
               height: 0,
               borderLeft: '12px solid transparent',
               borderRight: '12px solid transparent',
-              borderTop: '20px solid rgb(var(--ink))',
+              borderTop: '20px solid #ffffff',
             }}
           />
           <motion.svg
@@ -158,7 +158,7 @@ export function Prize() {
                 </g>
               )
             })}
-            <circle cx="100" cy="100" r="14" fill="rgb(var(--surface-raised))" stroke="#0f0f14" strokeWidth="1.5" />
+            <circle cx="100" cy="100" r="14" fill="#0f1733" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" />
           </motion.svg>
         </div>
 
@@ -168,25 +168,25 @@ export function Prize() {
             animate={{ opacity: 1, y: 0 }}
             className="flex w-full flex-col items-center gap-5"
           >
-            <h1 className="text-2xl font-semibold text-ink">{pick(prize, 'label')}</h1>
+            <h1 className="text-2xl font-semibold text-white">{pick(prize, 'label')}</h1>
 
-            <div className="flex w-full flex-col items-center gap-2 rounded-3xl bg-surface-raised/70 p-5 shadow-sm ring-1 ring-black/5">
-              <span className="text-xs uppercase tracking-wide text-ink-faint">
+            <div className="flex w-full flex-col items-center gap-2 rounded-3xl bg-white/10 p-5 shadow-sm ring-1 ring-white/15">
+              <span className="text-xs uppercase tracking-wide text-white/45">
                 {t('prize.code.label')}
               </span>
-              <span className="select-all font-mono text-2xl font-bold tracking-widest text-ink">
+              <span className="select-all font-mono text-2xl font-bold tracking-widest text-white">
                 {prize.code}
               </span>
               <button
                 type="button"
                 onClick={copy}
-                className="focus-ring mt-1 rounded-full bg-surface px-4 py-1.5 text-sm font-medium text-ink-soft ring-1 ring-black/5 transition hover:text-ink"
+                className="focus-ring mt-1 rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white/70 ring-1 ring-white/15 transition hover:text-white"
               >
                 {copied ? t('prize.copied') : t('prize.copy')}
               </button>
             </div>
 
-            <p className="text-sm text-ink-soft">
+            <p className="text-sm text-white/70">
               ✨ {prize.points} {t('prize.points')}
             </p>
 

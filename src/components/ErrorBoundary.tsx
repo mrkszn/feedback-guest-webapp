@@ -39,8 +39,8 @@ export class ErrorBoundary extends Component<Props, State> {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-4 px-8 text-center">
         <div className="text-5xl">🌧️</div>
-        <h1 className="text-xl font-semibold text-ink">{c.title}</h1>
-        <p className="max-w-xs text-sm text-ink-soft">{c.body}</p>
+        <h1 className="text-xl font-semibold text-white">{c.title}</h1>
+        <p className="max-w-xs text-sm text-white/70">{c.body}</p>
         <button
           type="button"
           onClick={() => window.location.reload()}

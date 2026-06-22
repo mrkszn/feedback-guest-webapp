@@ -13,7 +13,7 @@ export function TopControls() {
         type="button"
         onClick={() => setLocale(nextLocale)}
         aria-label={t('lang.switch')}
-        className="focus-ring flex h-9 items-center justify-center rounded-full bg-surface-raised/80 px-3 text-xs font-semibold uppercase tracking-wide text-ink shadow-sm ring-1 ring-black/5 backdrop-blur"
+        className="focus-ring flex h-9 items-center justify-center rounded-full bg-white/10 px-3 text-xs font-semibold uppercase tracking-wide text-white shadow-sm ring-1 ring-white/15 backdrop-blur"
       >
         {locale}
       </button>

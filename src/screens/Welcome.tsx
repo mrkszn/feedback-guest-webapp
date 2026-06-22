@@ -32,7 +32,7 @@ export function Welcome() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-3xl font-semibold leading-tight text-ink"
+            className="text-3xl font-semibold leading-tight text-white"
           >
             {t('welcome.title')}
           </motion.h1>
@@ -40,7 +40,7 @@ export function Welcome() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-base text-ink-soft"
+            className="text-base text-white/70"
           >
             {t('welcome.subtitle')}
           </motion.p>
