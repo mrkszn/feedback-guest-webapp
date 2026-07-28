@@ -1,50 +1,104 @@
-# Деплой feedback-guest-webapp: Vercel → VPS (Coolify)
+# Деплой feedback-guest-webapp: Vercel → VPS 178.105.54.29 (Coolify)
 
-Инструкция по переносу гостевого веб-опросника на свой VPS под управлением
-Coolify. Рассчитана на Coolify-инстанс с wildcard-доменом
-`*.apps.n8nmrkszn-domen.org` (сервер `178.105.160.84`).
+Целевая схема — всё на backend-VPS `178.105.54.29`:
 
-## Что уже готово (эта ветка)
+```
+DNS  *.feedback.n8nmrkszn-domen.org ──► 178.105.54.29
+     feedback.n8nmrkszn-domen.org  ──► 178.105.54.29
 
-- `Dockerfile` — multi-stage: `node:22-alpine` (Vite build) → `nginx:1.27-alpine`.
-- `deploy/nginx.conf` — SPA history-fallback (зеркало `vercel.json` rewrites),
-  immutable-кэш для `/assets/`, `no-cache` для PWA `sw.js` / `manifest.webmanifest`.
-- `.dockerignore`.
-- Локальная сборка проверена (`npm ci` + `npm run build` проходят).
+     n8n-caddy (80/443, существующий edge)
+       ├─ feedback.n8nmrkszn-domen.org          → 172.20.0.1:8310  (контейнер опросника)
+       ├─ coolify.feedback.n8nmrkszn-domen.org  → 172.20.0.1:8300  (Coolify UI + вебхуки)
+       └─ api-waiter.178-105-54-29.nip.io       → 172.20.0.1:8200  (guest/admin API — как было)
 
-Vite инлайнит `VITE_*` в бандл **на этапе сборки** — поэтому обе переменные
-в Coolify обязательно помечайте как **Build Variable**.
+     Coolify (установлен, /data/coolify) — билдит образ из GitHub и катает контейнер 8310:80
+```
 
-## Шаги в Coolify
+Прокси самого Coolify **не используется** (80/443 заняты Caddy) — у сервера
+`localhost` в Coolify выставить **Proxy = None**.
 
-1. Смёржить PR ветки `feat/coolify-deploy` в `master`
-   (для первого теста можно деплоить прямо ветку).
-2. **+ New Resource → Public Repository** →
-   `https://github.com/mrkszn/feedback-guest-webapp`, branch `master`,
-   **Build Pack: Dockerfile**.
-3. **Environment Variables** (обе — галочка *Build Variable*):
+## Уже сделано (Claude, 2026-07-28)
 
-   | Переменная | Значение |
-   |---|---|
-   | `VITE_API_BASE_URL` | `https://api-waiter.178-105-54-29.nip.io` |
-   | `VITE_APP_MODE` | `non_targeted` *(или `targeted`, если оставляем геймифицированную версию — режим задаётся только здесь)* |
+- Ветка `feat/coolify-deploy` (PR #13): `Dockerfile` (node:22 → nginx:1.27,
+  SPA-fallback, кэш-политики PWA), `deploy/nginx.conf`, `.dockerignore`.
+  Сборка проверена локально.
+- Coolify установлен вручную на `178.105.54.29`: `/data/coolify`, UI на
+  `127.0.0.1:8300`. Первый аккаунт ещё НЕ создан.
+- Файрвол: `coolify-portguard.service` → `/usr/local/sbin/coolify-portguard.sh`
+  блокирует снаружи docker-порты 8300/6001/6002/8310 (docker publish обходит
+  ufw, поэтому DOCKER-USER). Изнутри и через Caddy — доступно.
+- CORS guest-API: `https://feedback.n8nmrkszn-domen.org` добавлен в
+  `ALLOWED_GUEST_ORIGINS` (`/etc/telegram-waiter/.env`, бэкап
+  `.env.bak-coolify-migration`), voice-api перезапущен, preflight проверен ✅.
+  Vercel-origins сохранены — переходный период безопасен.
+- Caddy-блоки подготовлены в `/root/caddy-feedback-blocks.snippet` — применяются
+  после появления DNS (см. шаг 2).
 
-4. **Network**: Ports Exposes = `80`.
-   **Domain**: `https://feedback.apps.n8nmrkszn-domen.org`
-   (любое имя внутри `*.apps.…` — TLS прокси Coolify выпустит сам).
-5. **Deploy** и проверить, что открывается `https://feedback.apps.n8nmrkszn-domen.org`.
+## Шаг 1 — DNS (вы)
 
-## Автодеплой на push (CI/CD)
+У DNS-провайдера домена `n8nmrkszn-domen.org` создать **две** записи:
 
-В приложении: **Webhooks → GitHub** — скопировать Payload URL и задать Secret.
-Затем в GitHub: `feedback-guest-webapp → Settings → Webhooks → Add webhook`:
+| Тип | Имя | Значение |
+|---|---|---|
+| A | `*.feedback` | `178.105.54.29` |
+| A | `feedback` | `178.105.54.29` |
 
-- Payload URL — из Coolify;
-- Content type — `application/json`;
-- Secret — тот же;
-- события — только `push`.
+(wildcard не покрывает «голое» `feedback.…`, поэтому записи две)
 
-Через gh CLI (подставить URL и SECRET из Coolify):
+## Шаг 2 — Caddy vhosts (Claude применит сам, когда DNS раздастся)
+
+Вручную это делается так (root@178.105.54.29):
+
+```bash
+cp /opt/n8n/Caddyfile /opt/n8n/Caddyfile.bak-feedback
+cat /root/caddy-feedback-blocks.snippet >> /opt/n8n/Caddyfile
+docker exec n8n-caddy-1 caddy validate --config /etc/caddy/Caddyfile
+docker exec n8n-caddy-1 caddy reload --config /etc/caddy/Caddyfile
+```
+
+После этого `https://coolify.feedback.n8nmrkszn-domen.org` откроет Coolify
+(сертификаты Caddy выпустит сам), а `https://feedback.…` будет отдавать 502 до
+первого деплоя приложения — это нормально.
+
+## Шаг 3 — Coolify: регистрация (вы, сразу же!)
+
+Открыть `https://coolify.feedback.n8nmrkszn-domen.org` и **немедленно
+зарегистрироваться** — до создания первого аккаунта форма регистрации открыта
+любому, кто найдёт адрес.
+
+Затем:
+
+1. **Settings → Instance Settings**: Instance URL =
+   `https://coolify.feedback.n8nmrkszn-domen.org` (нужно для корректных
+   webhook-ссылок). Registration → выключить, если предложено.
+2. **Servers → localhost → Proxy → выбрать None** (обязательно до первого
+   деплоя, иначе Coolify попробует поднять Traefik на занятые 80/443).
+
+## Шаг 4 — приложение (вы; или дайте Claude API-токен — сделает через API)
+
+**+ New Resource → Public Repository** → `https://github.com/mrkszn/feedback-guest-webapp`
+
+- Branch: `master` (после merge PR #13; для теста можно `feat/coolify-deploy`)
+- **Build Pack: Dockerfile**
+- **Environment Variables** (у обеих галочка *Build Variable* — Vite инлайнит
+  их на этапе сборки):
+
+  | Переменная | Значение |
+  |---|---|
+  | `VITE_API_BASE_URL` | `https://api-waiter.178-105-54-29.nip.io` |
+  | `VITE_APP_MODE` | `non_targeted` |
+
+- **Network → Ports Mappings**: `8310:80` (именно Mappings; Domain оставить
+  пустым — маршрутизацию делает Caddy)
+- **Deploy** → после сборки `https://feedback.n8nmrkszn-domen.org` должен
+  открыться.
+
+## Шаг 5 — автодеплой на push (CI/CD)
+
+В приложении Coolify: **Webhooks** → скопировать GitHub Payload URL (будет на
+базе `coolify.feedback.…`) и задать Secret. Затем добавить webhook в GitHub
+(Settings → Webhooks → Add, событие `push`, content type `application/json`)
+или через gh CLI:
 
 ```bash
 gh api repos/mrkszn/feedback-guest-webapp/hooks -f name=web -F active=true \
@@ -52,63 +106,30 @@ gh api repos/mrkszn/feedback-guest-webapp/hooks -f name=web -F active=true \
   -f config.content_type=json -f config.secret='<SECRET>'
 ```
 
-После этого каждый push в `master` пересобирает и перекатывает контейнер.
+После этого каждый push в `master` пересобирает и перекатывает приложение.
 
-## CORS на бэкенде (обязательно)
+## Шаг 6 — смок-тест
 
-Guest-API пускает только origin'ы из allowlist — без этого фронт получит
-«Load failed». На backend-VPS (`root@178.105.54.29`) отредактировать
-`/etc/telegram-waiter/.env`: добавить новый origin через запятую к
-`ALLOWED_GUEST_ORIGINS` (точное совпадение схемы+хоста, без слэша в конце):
+1. `https://feedback.n8nmrkszn-domen.org` — entry открывается, в консоли нет
+   CORS-ошибок.
+2. Токен-ссылка `/?t=…` → `/feed` → биты → `/recap` → `/dig` → `/final`,
+   finalize уходит в API.
+3. Перезагрузка страницы посреди сессии — состояние восстанавливается.
 
-```
-ALLOWED_GUEST_ORIGINS=<текущие значения>,https://feedback.apps.n8nmrkszn-domen.org
-```
+## Шаг 7 — переключение с Vercel
 
-Применить и проверить preflight:
+- Обновить QR/ссылки с `*.vercel.app` на `https://feedback.n8nmrkszn-domen.org`.
+- Vercel-проекты (`feedback-guest-webapp`, `feedback-guest-webapp2`) не
+  удалять, пока все прод-ссылки не переключены; затем — пауза/удаление.
+- После вывода Vercel можно вычистить его origins из `ALLOWED_GUEST_ORIGINS`
+  (не обязательно).
 
-```bash
-sudo systemctl restart voice-api
-```
+## Справка: что где лежит на 178.105.54.29
 
-```bash
-curl -is -X OPTIONS https://api-waiter.178-105-54-29.nip.io/guest/auth \
-  -H "Origin: https://feedback.apps.n8nmrkszn-domen.org" \
-  -H "Access-Control-Request-Method: POST" | grep -i access-control
-```
-
-В ответе должен быть `access-control-allow-origin: https://feedback.apps.…`.
-
-## Смок-тест после деплоя
-
-1. `/` — entry-экран открывается, консоль без CORS-ошибок.
-2. Вход по токен-ссылке `/?t=…` → `/feed`.
-3. Пройти биты, `/recap` → `/dig` → `/final`, finalize уходит на API.
-4. Перезагрузка страницы посреди сессии — состояние восстанавливается
-   (`GET /guest/sessions/{id}`).
-
-## Переключение с Vercel
-
-- Обновить все QR-коды/ссылки, которые ведут на `*.vercel.app`, на новый домен.
-- Vercel-проекты не удалять, пока прод-ссылки не переключены; потом —
-  пауза или удаление по желанию (могут остаться как staging).
-
-## Примечание: второй Coolify на 178.105.54.29
-
-В процессе миграции Coolify был установлен и на backend-VPS
-(`/data/coolify`, UI на `127.0.0.1:8300`, снаружи закрыт
-`coolify-portguard.service`). Если он не нужен, снос:
-
-```bash
-cd /data/coolify/source && docker compose --env-file .env \
-  -f docker-compose.yml -f docker-compose.prod.yml down -v
-docker network rm coolify
-rm -rf /data/coolify
-systemctl disable --now coolify-portguard.service
-rm /etc/systemd/system/coolify-portguard.service && systemctl daemon-reload
-# ufw status numbered → удалить правило «8300 … coolify UI» (ufw delete <N>)
-# из /root/.ssh/authorized_keys убрать строку с комментарием root@coolify
-```
-
-Либо оставить его как локальный Coolify для управления деплоями именно
-этого сервера — он изолирован (порт наружу закрыт, прод-сервисы не тронуты).
+| Что | Где |
+|---|---|
+| Coolify | `/data/coolify` (compose: `/data/coolify/source`), UI `127.0.0.1:8300` |
+| Файрвол-щиток | `/usr/local/sbin/coolify-portguard.sh` + `coolify-portguard.service` |
+| Caddyfile | `/opt/n8n/Caddyfile` (контейнер `n8n-caddy-1`) |
+| Backend env | `/etc/telegram-waiter/.env` (бэкап `.env.bak-coolify-migration`) |
+| Staged Caddy-блоки | `/root/caddy-feedback-blocks.snippet` |
